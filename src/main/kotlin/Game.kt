@@ -50,7 +50,7 @@ class Game(private val rounds: Int) {
 }
 
 fun main() {
-    val game = Game(20)
+    val game = Game(100)
     val playerA = Player("Player A", DeterministicMoveStrategy(Move.ROCK))
     val playerB = Player("Player B", RandomMoveStrategy())
     game.play(listOf(playerA, playerB))
