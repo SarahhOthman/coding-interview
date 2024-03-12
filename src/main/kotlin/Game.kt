@@ -1,5 +1,13 @@
 enum class Move {
-    ROCK, PAPER, SCISSORS
+    ROCK, PAPER, SCISSORS;
+
+    fun beats(): Move {
+        return when (this) {
+            ROCK -> SCISSORS
+            PAPER -> ROCK
+            SCISSORS -> PAPER
+        }
+    }
 }
 
 interface MoveStrategy {
@@ -29,19 +37,27 @@ class Game(private val rounds: Int) {
 
     fun play(players: List<Player>) {
         repeat(rounds) {
-            val moveA = players[0].chooseMove()
-            val moveB = players[1].chooseMove()
-
-            when {
-                moveA == moveB -> draws++
-                moveA == Move.ROCK && moveB == Move.SCISSORS -> playerAWins++
-                moveA == Move.PAPER && moveB == Move.ROCK -> playerAWins++
-                moveA == Move.SCISSORS && moveB == Move.PAPER -> playerAWins++
-                else -> playerBWins++
-            }
+            val playerA = players[0].chooseMove()
+            val playerB = players[1].chooseMove()
+            updateScores(calculateResult(playerA, playerB))
         }
     }
 
+    private fun calculateResult(playerA: Move, playerB: Move) :Result {
+       return when (playerA) {
+            playerB -> Result.DRAW
+            playerB.beats() -> Result.WIN
+            else -> Result.LOSE
+        }
+    }
+
+    private fun updateScores(result: Result) {
+        when (result) {
+            Result.WIN -> playerBWins++
+            Result.LOSE -> playerAWins++
+            Result.DRAW -> draws++
+        }
+    }
     fun printResults() {
         println("Player A wins $playerAWins of $rounds games")
         println("Player B wins $playerBWins of $rounds games")
